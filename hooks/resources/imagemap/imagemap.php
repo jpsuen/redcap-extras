@@ -27,7 +27,8 @@ $imageMapLibrary['PAINMAP_MALE'] = array(
 	'image' => "painmap_male.png",
 	'width' => 553,
 	'height'=> 580,
-	'map'   => "painmap_male.html"
+	'map'   => "painmap_male.html",
+	'single'=> true,
 );
 
 $imageMapLibrary['PAINMAP_FEMALE'] = array(
@@ -36,9 +37,71 @@ $imageMapLibrary['PAINMAP_FEMALE'] = array(
 	'image' => "painmap_female.png",
 	'width' => 518,
 	'height'=> 580,
-	'map'   => "painmap_female.html"
+	'map'   => "painmap_female.html",
+	'single'=> true,
 );
 
+$imageMapLibrary['PAINMAP_MALE+'] = array(
+	'name'  => 'painmap_male',
+	'alt'   => "Male Front Pain Map",
+	'image' => "painmap_male.png",
+	'width' => 553,
+	'height'=> 580,
+	'map'   => "painmap_male.html",
+	'single'=> false,
+);
+
+$imageMapLibrary['PAINMAP_FEMALE+'] = array(
+	'name'  => 'painmap_female',
+	'alt'   => "Female Front Pain Map",
+	'image' => "painmap_female.png",
+	'width' => 518,
+	'height'=> 580,
+	'map'   => "painmap_female.html",
+	'single'=> false,
+);
+
+$imageMapLibrary['PASTOR_PAINMAP'] = array(
+	'name'  => 'painmap_female',
+	'alt'   => "PASTOR Pain Map",
+	'image' => "pastorpain.jpg",
+	'width' => 640,
+	'height'=> 601,
+	'map'   => "pastorpain.html",
+	'single'=> true,
+);
+
+$imageMapLibrary['PASTOR_PAINMAP+'] = array(
+	'name'  => 'painmap_female',
+	'alt'   => "PASTOR Pain Map",
+	'image' => "pastorpain.jpg",
+	'width' => 640,
+	'height'=> 601,
+	'map'   => "pastorpain.html",
+	'single'=> false,
+);
+
+$imageMapLibrary['SCALE_DVPRS'] = array(
+        'name'  => 'dvprs',
+        'alt'   => "DVPRS",
+        'image' => "scale_dvprs.png",
+        'width' => 600,
+        'height'=> 429,
+        'map'   => "scale_dvprs.html",
+        'single'=> false,
+);
+
+$imageMapLibrary['SUPPLEMENTAL'] = array(
+        'name'  => 'dvprs_supplemental',
+        'alt'   => "DVPRS Supplemental Questions",
+        'image' => "supplemental.png",
+        'width' => 700,
+        'height'=> 53,
+        'map'   => "supplemental.html",
+        'single'=> false,
+);
+
+/*
 // Assumes we have populated the hook_functions array
 if (!isset($hook_functions)) {
 	echo "ERROR: Missing check for hook_functions array in " . __FILE__ . ".  Check your global hook for redcap_survey_page.";
@@ -50,7 +113,7 @@ if (!isset($hook_functions[$term])) {
 	error_log ("Skipping - no $term functions called.");
 	return;
 } 
-
+*/
 
 # Step 1 - inject imageMapster.js
 echo "<script type='text/javascript'>";
@@ -85,6 +148,7 @@ foreach($hook_functions[$term] as $field => $details) {
 			// Add the question type (text or checkbox)
 			$js_params['type'] = $elements[$elements_index]['rr_type'];
 			$startup_vars[] = $js_params;
+
 		}
 	} else {
 		error_log ("ERROR: Parameters for $term are not configured in the imagemap hook.");
@@ -95,7 +159,14 @@ foreach($hook_functions[$term] as $field => $details) {
 //error_log("Startup Vars: ". print_r($startup_vars,true));
 
 # Step 3 - inject the custom javascript and start the post-rendering
-$script_path = dirname(__FILE__) . DS . "imagemap.js";
+
+if ($js_params['single'] == true) {
+$script_path = dirname(__FILE__) . DS . "singleimagemap.js";
+}
+else {
+$script_path = dirname(__FILE__) . DS . "multiimagemap.js";
+}
+
 $start_function = "imageMapStart()";
 
 echo "<script type='text/javascript'>";
